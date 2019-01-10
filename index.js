@@ -16,7 +16,7 @@ module.exports = function( path ){
     }
     exist( name ){
       let path = [ this.path ];
-      typeof name !== "undefined" ? path.push( name ) : null;
+      typeof name !== "undefined" ? path.push( `./${name}` ) : null;
       return fs.existsSync( pathLib.resolve.apply( pathLib, path ));
     }
     isDirectory(){
