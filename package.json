@@ -1,0 +1,22 @@
+{
+  "name": "ps-file",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mayalust/ps-file.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mayalust/ps-file/issues"
+  },
+  "homepage": "https://github.com/mayalust/ps-file#readme",
+  "dependencies": {
+    "ps-ultility": "^1.0.46"
+  }
+}
