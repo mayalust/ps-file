@@ -14,8 +14,10 @@ module.exports = function( path ){
     stat(){
       return getState( this.path );
     }
-    exist(){
-      return fs.existsSync( this.path );
+    exist( name ){
+      let path = [ this,path ];
+      typeof name !== "undefined" ? path.push( name ) : null;
+      return fs.existsSync( pathLib.resolve.apply( pathLib, path ));
     }
     isDirectory(){
       return typeof this.isDir !== "undefined"
