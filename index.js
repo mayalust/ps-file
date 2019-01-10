@@ -15,7 +15,7 @@ module.exports = function( path ){
       return getState( this.path );
     }
     exist( name ){
-      let path = [ this,path ];
+      let path = [ this.path ];
       typeof name !== "undefined" ? path.push( name ) : null;
       return fs.existsSync( pathLib.resolve.apply( pathLib, path ));
     }
