@@ -159,11 +159,16 @@ module.exports = function( path ){
     let match = /\.([^.\\\/]+)$/.exec( path );
     return match ? match[ 1 ] : ""
   }
+  function getBasename( path ){
+    let match = /[\\\/]([^\\\/]*)\.[^.\\\/]+$/.exec( path );
+    return match ? match[ 1 ] : ""
+  }
   function getState( path ){
     return new Promise((resolve, reject) => {
       fs.stat( path , (err, d) => {
         if(!err){
           resolve(new filetree({
+            basename : getBasename( path ),
             path : path,
             isDir : d.isDirectory(),
             modifytime : d.mtime,
