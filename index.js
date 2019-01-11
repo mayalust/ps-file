@@ -155,6 +155,10 @@ module.exports = function( path ){
       })
     });
   }
+  function getExt( path ){
+    let match = /\.([^.\\\/]+)$/.exec( path );
+    return match ? match[ 1 ] : ""
+  }
   function getState( path ){
     return new Promise((resolve, reject) => {
       fs.stat( path , (err, d) => {
@@ -163,7 +167,8 @@ module.exports = function( path ){
             path : path,
             isDir : d.isDirectory(),
             modifytime : d.mtime,
-            data : d
+            data : d,
+            ext : getExt( path )
           }))
         } else {
           err.path = path;
