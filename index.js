@@ -45,14 +45,11 @@ module.exports = function( path ){
       } else {
         path = pathLib.join( this.path, `./${name}` );
       }
-      return typeof content === "undefined"
-        ? createError(`content is undeined`)
-        : read( path ).then( content => {
-          return getState( path ).then( d => {
-            d.content = content
-            return createImmediatePromise( d );
-          });
-        })
+      return read( path ).then( content => {
+        return getState( path ).then( d => {
+          return createImmediatePromise( content );
+        });
+      })
     }
     remove(){
       return remove( this.path );
