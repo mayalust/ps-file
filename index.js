@@ -1,6 +1,6 @@
 const fs = require("fs"),
   pathLib = require("path"),
-  { extend } = require("ps-ultility");
+  { extend, dateparser } = require("ps-ultility");
 module.exports = function( path ){
   class filetree{
     constructor( path ){
@@ -169,6 +169,7 @@ module.exports = function( path ){
             path : path,
             isDir : d.isDirectory(),
             modifytime : d.mtime,
+            modifytimeStr : dateparser(d.mtime).getDateString("yyyy-MM-dd,hh:mm:ss"),
             data : d,
             ext : getExt( path )
           }))
