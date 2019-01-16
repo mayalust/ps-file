@@ -88,8 +88,8 @@ module.exports = function( path ){
           })
         }));
       }
-      load([ this.path ]).then( d => {
-        createSuccess( rs );
+      return load([ this.path ]).then( d => {
+        return createSuccess( rs );
       });
     }
     readDir(){
