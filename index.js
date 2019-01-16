@@ -21,9 +21,9 @@ module.exports = function( path ){
     }
     isDirectory(){
       return typeof this.isDir !== "undefined"
-        ? createImmediatePromise( this.isDir )
+        ? createSuccess( this.isDir )
         : getState( this.path ).then( d => {
-          return createImmediatePromise( d.isDir );
+          return createSuccess( d.isDir );
         })
     }
     write( name, content ){
@@ -47,7 +47,7 @@ module.exports = function( path ){
       }
       return read( path ).then( content => {
         return getState( path ).then( d => {
-          return createImmediatePromise( content );
+          return createSuccess( content );
         });
       })
     }
@@ -59,28 +59,44 @@ module.exports = function( path ){
       return mkdir( path )
         .then( d => getState( path ))
     }
+    find( callback ){
+      if(typeof callback !== "function"){
+        throw new Error("query condition is not a valid function but a " + typeof callback);
+      }
+      function load( paths ){
+        return paths.length > 0 ? Promise.all(paths.map( path => {
+          return readDir( path );
+        })).then( d => {
+          let arr = d.reduce((a, b) => a.concat( b ),[]),
+            fd = arr.find(callback)
+          return fd ? createSuccess(fd)
+            : load( arr.filter( d => d.isDir).map( d => d.path) );
+        }) : createSuccess( undefined );
+      }
+      return load( [this.path] ).then( d => {
+        return createSuccess( d );
+      })
+    }
     children( callback ){
       let rs = [];
       callback = callback || function(){ return true };
-      return new Promise((resolve, reject) => {
-        function load( paths ){
-          return Promise.all(paths.map( path => {
-            return readDir( path ).then( d => {
-              [].push.apply(rs, d.filter(callback));
-              return load( d.filter( d => d.isDir).map( d => d.path) );
-            })
-          }));
-        }
-        load([ this.path ]).then( d => {
-          resolve( rs );
-        })
+      function load( paths ){
+        return Promise.all(paths.map( path => {
+          return readDir( path ).then( d => {
+            [].push.apply(rs, d.filter(callback));
+            return load( d.filter( d => d.isDir).map( d => d.path) );
+          })
+        }));
+      }
+      load([ this.path ]).then( d => {
+        createSuccess( rs );
       });
     }
     readDir(){
       return readDir( this.path );
     }
   }
-  function createImmediatePromise( d ){
+  function createSuccess( d ){
     return new Promise( resolve => {
       resolve( d );
     });
