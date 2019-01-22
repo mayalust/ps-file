@@ -1,6 +1,6 @@
 {
   "name": "ps-file",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/mayalust/ps-file#readme",
   "dependencies": {
-    "ps-ultility": "^1.0.46"
+    "ps-ultility": "^1.0.53"
   }
 }

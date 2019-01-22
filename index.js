@@ -1,6 +1,6 @@
 const fs = require("fs"),
   pathLib = require("path"),
-  { extend, dateparser } = require("ps-ultility");
+  { extend, dateparser, pathResolver } = require("ps-ultility");
 module.exports = function( path ){
   class filetree{
     constructor( path ){
@@ -16,7 +16,7 @@ module.exports = function( path ){
     }
     exist( name ){
       let path = [ this.path ];
-      typeof name !== "undefined" ? path.push( `./${name}` ) : null;
+      typeof name !== "undefined" ? path.push( pathResolver.join("./", name) ) : null;
       return fs.existsSync( pathLib.resolve.apply( pathLib, path ));
     }
     isDirectory(){
@@ -32,7 +32,7 @@ module.exports = function( path ){
         content = name;
         path = this.path;
       } else {
-        path = pathLib.join( this.path, `./${name}` );
+        path = pathLib.join( this.path, pathResolver.join("./", name) );
       }
       return typeof content === "undefined"
         ? createError(`content is undeined`)
@@ -43,7 +43,7 @@ module.exports = function( path ){
       if( typeof name == "undefined" ){
         path = this.path;
       } else {
-        path = pathLib.join( this.path, `./${name}` );
+        path = pathLib.join( this.path, pathResolver.join("./", name) );
       }
       return read( path ).then( content => {
         return getState( path ).then( d => {
@@ -51,11 +51,34 @@ module.exports = function( path ){
         });
       })
     }
+    removeAll( name ){
+      return this.find( d => {
+        return d.path == pathLib.resolve( this.path, `${ pathResolver.join("./", name)}`);
+      }).then( foler => {
+        foler.children( d => {
+          return !d.isDir;
+        } ).then( files => {
+          return Promise.all(files.map( file => {
+            return file.remove();
+          }))
+        }).then( d => {
+          return foler.children().then( dirs => {
+            return Promise.all(dirs.map( dir => {
+              return dir.remove();
+            }))
+          }).then( d => {
+            return createSuccess("removed!!")
+          })
+        }).then( d => {
+          return foler.remove();
+        })
+      });
+    }
     remove(){
-      return remove( this.path );
+      return this.isDir ? removeDir( this.path ) : remove( this.path );
     }
     mkdir( name ){
-      let path = pathLib.resolve( this.path, `./${name}`)
+      let path = pathLib.resolve( this.path, pathResolver.join("./", name))
       return mkdir( path )
         .then( d => getState( path ))
     }
@@ -111,7 +134,7 @@ module.exports = function( path ){
       fs.readdir( path, (err, d) => {
         if(!err){
           return Promise.all(d.map( n => {
-            return getState( pathLib.resolve(path, `./${n}`) );
+            return getState( pathLib.resolve(path, pathResolver.join("./", n)) )
           })).then( d => {
             resolve( d );
           }).catch( e => {
@@ -155,7 +178,17 @@ module.exports = function( path ){
         }
       })
     });
-
+  }
+  function removeDir(path){
+    return new Promise((resolve, reject) => {
+      fs.rmdir(path, (err, d) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve( "directory removed" );
+        }
+      })
+    });
   }
   function mkdir(path){
     return new Promise((resolve, reject) => {
