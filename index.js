@@ -55,7 +55,7 @@ module.exports = function( path ){
       return this.find( d => {
         return d.path == pathLib.resolve( this.path, `${ pathResolver.join("./", name)}`);
       }).then( foler => {
-        foler.children( d => {
+        foler ? foler.children( d => {
           return !d.isDir;
         } ).then( files => {
           return Promise.all(files.map( file => {
@@ -71,7 +71,7 @@ module.exports = function( path ){
           })
         }).then( d => {
           return foler.remove();
-        })
+        }) : createSuccess("empty")
       });
     }
     remove(){
