@@ -120,9 +120,6 @@ module.exports = function( path ){
         return createSuccess( rs );
       });
     }
-    readDir(){
-      return readDir( this.path );
-    }
   }
   function createSuccess( d ){
     return new Promise( resolve => {
