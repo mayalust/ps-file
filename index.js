@@ -28,6 +28,11 @@ module.exports = function( path ){
           return createSuccess( d.isDir );
         })
     }
+    readDir( name ){
+      let path = [ this.path ];
+      typeof name !== "undefined" ? path.push( pathResolver.join("./", name) ) : null;
+      return readDir( pathLib.resolve.apply( pathLib, path ));
+    }
     write( name, content ){
       let path;
       if( typeof content == "undefined" ){
