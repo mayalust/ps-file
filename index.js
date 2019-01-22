@@ -11,8 +11,10 @@ module.exports = function( path ){
       }
       extend( this, path );
     }
-    stat(){
-      return getState( this.path );
+    stat( name ){
+      let path = [ this.path ];
+      typeof name !== "undefined" ? path.push( pathResolver.join("./", name) ) : null;
+      return getState( pathLib.resolve.apply( pathLib, path ));
     }
     exist( name ){
       let path = [ this.path ];
