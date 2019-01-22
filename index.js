@@ -208,7 +208,7 @@ module.exports = function( path ){
     return match ? match[ 1 ] : ""
   }
   function getBasename( path ){
-    let match = /[\\\/]([^\\\/]*)\.[^.\\\/]+$/.exec( path );
+    let match = /[\\\/]([^\\\/]*)(\.[^.\\\/]+)?$/.exec( path );
     return match ? match[ 1 ] : ""
   }
   function getState( path ){
