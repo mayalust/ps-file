@@ -68,7 +68,8 @@ module.exports = function( path ){
           }))
         }).then( d => {
           return foler.children().then( dirs => {
-            return Promise.all(dirs.map( dir => {
+            let sortArr = [];
+            return Promise.all(dirs.reverse().map( dir => {
               return dir.remove();
             }))
           }).then( d => {
