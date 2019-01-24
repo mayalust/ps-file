@@ -212,8 +212,10 @@ module.exports = function( path ){
     return match ? match[ 1 ] : ""
   }
   function getBasename( path ){
-    let match = /[\\\/]([^\\\/]*)(\.[^.\\\/]+)?$/.exec( path );
-    return match ? match[ 1 ] : ""
+    let match = /[\\\/]([^\\\/]*)$/.exec( path ),
+      rs = match ? match[1].split(".") : [];
+    rs.length > 1 ? rs.pop() : null
+    return rs.join(".");
   }
   function getState( path ){
     return new Promise((resolve, reject) => {
