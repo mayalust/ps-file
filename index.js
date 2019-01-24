@@ -60,18 +60,11 @@ module.exports = function( path ){
     }
     removeAll( name ){
       return this.stat().then( foler => {
-        return foler ? foler.children( d => {
-          return !d.isDir;
-        } ).then( files => {
-          return Promise.all(files.map( file => {
-            return file.remove();
-          }))
-        }).then( d => {
+        return foler ? foler.children().then( d => {
           return foler.children().then( dirs => {
-            let sortArr = [];
-            return Promise.all(dirs.reverse().map( dir => {
+            return execQue(dirs.reverse(), dir => {
               return dir.remove();
-            }))
+            })
           }).then( d => {
             return createSuccess("removed!!")
           })
@@ -120,6 +113,16 @@ module.exports = function( path ){
       return load([ this.path ]).then( d => {
         return createSuccess( rs );
       });
+    }
+  }
+  function execQue( queue, callback ){
+    let item = queue.shift();
+    if( item ){
+      return callback( item ).then( function (d) {
+        return execQue( queue, callback );
+      })
+    } else {
+      return createSuccess("all finished");
     }
   }
   function createSuccess( d ){
